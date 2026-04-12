@@ -169,9 +169,10 @@ CREATE TABLE daily_cash_drawer (
     id SERIAL PRIMARY KEY,
     opened_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     closed_at TIMESTAMP WITH TIME ZONE,
-    initial_value INTEGER DEFAULT 0,
-    final_value INTEGER DEFAULT 0,
-    status VARCHAR(10) DEFAULT 'aberto'
+    initial_value INTEGER DEFAULT 0,    -- O "fundo de caixa" (dinheiro que começa para troco)
+    total_recorded INTEGER DEFAULT 0,   -- O sistema soma aqui automaticamente a cada pedido pago
+    final_counted INTEGER DEFAULT 0,    -- O valor que o usuário digita ao fechar o dia
+    status VARCHAR(10) DEFAULT 'aberto' CHECK (status IN ('aberto', 'fechado'))
 );
 ```
 
