@@ -18,6 +18,10 @@
 
 # Migrations
 
+**manual**
 1) migrate create -ext sql -dir migrations -seq "nome_tabela_migracao" ( sem aspas duplas, para voce documentar a tabela que ira fazer as mudanças ou criar)
 2) migrate -path migrations -database "postgres://postgres:postgres@localhost:5432/restaurante_go?sslmode=disable" up  (Subir no banco )
 
+**script auto**
+./scripts/migrate.sh create create_table_example
+./scripts/migrate.sh up
