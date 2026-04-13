@@ -112,3 +112,21 @@ func main4() {
 	}
 
 }
+
+// Slice vs Lista
+/*
+- Na Lista Ligada (container/list): Para chegar no 100º item, o computador tem que ler o 1º, que aponta para o 2º, que aponta para o 3º... até o 100º.
+- Isso é O(n) para acesso.
+- Além disso, cada item pode estar em um lugar totalmente diferente da memória RAM, o que faz o processador trabalhar muito mais (cache miss).
+
+No Slice: Como os dados estão em um array contínuo na memória, se você quer o slice[99], o Go faz um cálculo matemático simples: ponteiro_inicial + (tamanho_do_item * 99).
+- Ele pula direto para o endereço de memória certo. Isso é O(1) para acesso por índice.
+*/
+
+/*
+
+A BUSCA (No Banco): É responsabilidade do SQL. Se tiver índice, é rápido ($O(log n)$). Se não tiver, é lento ($O(n)$).
+O ARMAZENAMENTO (No Go): O Slice é performático porque ele organiza os dados como uma "fila indiana" perfeita na memória RAM.
+O ACESSO: Se você precisar de qualquer item específico daquela lista depois que ela saiu do banco, o Slice te entrega na hora ($O(1)$), enquanto a Lista te obrigaria a caminhar por ela toda ($O(n)$).
+
+*/

@@ -8,15 +8,27 @@ import (
 )
 
 func RegisterRoutes(r *gin.Engine, pool *pgxpool.Pool) {
-	cashRepo := repository.NewCashDrawerRepository(pool)
-	cashH := &handlers.CashDrawerHandler{Repo: cashRepo}
+    // 1. Instancia os Repositories (Camada de Dados)
+    cashRepo := repository.NewCashDrawerRepository(pool)
+    categoriesRepo := repository.NewCategoriesRepository(pool)
 
-	categoriesRepo := repository.NewCategoriesRepository(pool)
-	categoriesHandle := &handlers.CategoriesHandler{Repo: categoriesRepo}
+    // 2. Instancia os Handlers (Camada de Controle)
+    // Ajustei de 'handlers' para 'handler' para bater com seu import
+    cashH := &handler.CashDrawerHandler{Repo: cashRepo}
+    categoriesHandle := &handler.CategoriesHandler{Repo: categoriesRepo}
 
-	api := r.Group("/api/v1")
-	{
-		api.POST("/caixa/abrir", cashH.AbrirCaixaHandler)
-		api.POST("/categories", categoriesHandle.SaveCategory)
-	}
+    // 3. Define as Rotas
+    api := r.Group("/api/v1")
+    {
+        // Rotas de Caixa
+        api.POST("/caixa/abrir", cashH.AbrirCaixaHandler)
+        
+        // Rotas de Categorias
+        api.POST("/categories", categoriesHandle.SaveCategory)
+        api.GET("/categories", categoriesHandle.CategoriesList)
+        api.GET("/categories/search", categoriesHandle.SearchCategoriesHandler)
+        api.GET("/categories/:id", categoriesHandle.GetCategoryByID)
+        api.PUT("/categories/:id", categoriesHandle.UpdateCategory)
+        api.DELETE("/categories/:id", categoriesHandle.DeleteCategory)
+    }
 }
