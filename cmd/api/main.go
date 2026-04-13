@@ -3,10 +3,8 @@ package main
 import (
 	"log"
 	"restaurante/internal/config"
-	"restaurante/internal/database"
-	"restaurante/internal/handle"     // Import direto para evitar confusão
-	"restaurante/internal/repository" // Você vai precisar importar o repository aqui
-
+	"restaurante/internal/database"  
+	"restaurante/internal/routes"
 	"github.com/gin-gonic/gin"
 )
 
@@ -24,30 +22,14 @@ func main() {
 	}
 	defer pool.Close()
 
-	// --- A PARTE QUE FALTAVA ---
-	
-	// 3. Instancia o Repository (Passa o pool de conexão)
-	cashRepo := repository.NewCashDrawerRepository(pool)
-
-	// 4. Instancia o Handler (Injeta o repository que acabamos de criar)
-	cashHandler := &handlers.CashDrawerHandler{Repo: cashRepo}
-
-	// ---------------------------
-
+	 
 	router := gin.Default()
 	router.SetTrustedProxies(nil)
+    
+    // Chamamos uma única função que resolve toda a bagunça
+    routes.RegisterRoutes(router, pool)
 
-	router.GET("/", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message":  "Restaurante API is running well!",
-			"status":   "success",
-			"database": "connected",
-		})
-	})
-
-	// 5. Agora sim, você usa a variável cashHandler que foi iniciada acima
-	router.POST("/caixa/abrir", cashHandler.AbrirCaixaHandler)
-
+    router.Run(":" + cfg.Port)
 	log.Printf("Server starting on port %s", cfg.Port)
 	router.Run(":" + cfg.Port)
 }
