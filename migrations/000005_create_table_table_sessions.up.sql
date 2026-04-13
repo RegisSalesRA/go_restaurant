@@ -1,0 +1,7 @@
+CREATE TABLE IF NOT EXISTS table_sessions (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    table_id INTEGER REFERENCES tables(id) ON DELETE CASCADE,
+    opened_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    closed_at TIMESTAMP WITH TIME ZONE,
+    total_amount INTEGER DEFAULT 0
+);
