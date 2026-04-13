@@ -29,7 +29,6 @@ func main() {
     // Chamamos uma única função que resolve toda a bagunça
     routes.RegisterRoutes(router, pool)
 
-    router.Run(":" + cfg.Port)
 	log.Printf("Server starting on port %s", cfg.Port)
 	router.Run(":" + cfg.Port)
 }
