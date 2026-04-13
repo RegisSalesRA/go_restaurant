@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
-	"restaurante/internal/routes"
+	"restaurante/routes"
 	"testing"
 
 	"github.com/gin-gonic/gin"

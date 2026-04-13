@@ -2,9 +2,9 @@ package main
 
 import (
 	"log"
-	"restaurante/internal/config"
-	"restaurante/internal/database"  
-	"restaurante/internal/routes"
+	"restaurante/config"
+	"restaurante/config/postgres"
+	"restaurante/routes" 
 	"github.com/gin-gonic/gin"
 )
 
