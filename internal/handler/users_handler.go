@@ -6,7 +6,7 @@ import (
 	"restaurante/internal/models"
 	"restaurante/internal/repository"
 	"strconv"
-
+	"os"
 	"github.com/gin-gonic/gin"
 )
 
@@ -105,7 +105,7 @@ func (h *UsersHandler) Login(c *gin.Context) {
 		return
 	}
 
-	token, err := auth.CreateJWT([]byte("SUA_CHAVE_SECRETA"), user.ID)
+	token, err := auth.CreateJWT([]byte(os.Getenv("JWT_SECRET")), user.ID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Erro ao gerar token"})
 		return
