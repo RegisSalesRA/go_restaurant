@@ -48,6 +48,7 @@ func RegisterRoutes(r *gin.Engine, pool *pgxpool.Pool) {
         {
             // Usuários protegidos
             protected.GET("/users_auth", usersH.UsersList)
+            protected.GET("/me", usersH.Me)
     }
   }
 }

@@ -113,3 +113,27 @@ func (h *UsersHandler) Login(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"token": token})
 }
+
+func (h *UsersHandler) Me(c *gin.Context) {
+    
+    userIDValue, exists := c.Get("userID")
+    if !exists {
+        c.JSON(http.StatusUnauthorized, gin.H{"error": "usuário não identificado"})
+        return
+    }
+
+    
+    userIDStr := userIDValue.(string)
+    userID, _ := strconv.Atoi(userIDStr)
+
+    
+    user, err := h.Repo.GetUserByID(c.Request.Context(), userID)
+    if err != nil {
+        c.JSON(http.StatusNotFound, gin.H{"error": "usuário não encontrado"})
+        return
+    }
+
+    
+    user.Password = ""
+    c.JSON(http.StatusOK, user)
+}
