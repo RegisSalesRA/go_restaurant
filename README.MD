@@ -25,6 +25,7 @@
 **script auto**
 ./scripts/migrate.sh create create_table_example
 ./scripts/migrate.sh up
+./scripts/migrate.sh force ( number of migration )
 
 
 **tests**
