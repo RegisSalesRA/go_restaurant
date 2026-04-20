@@ -1,10 +1,11 @@
 package routes
 
 import (
+	"restaurante/internal/handler"
+	"restaurante/internal/middleware"
+	"restaurante/internal/repository"
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx/v5/pgxpool"
-	"restaurante/internal/handler"
-	"restaurante/internal/repository"
 )
 
 func RegisterRoutes(r *gin.Engine, pool *pgxpool.Pool) {
@@ -40,11 +41,13 @@ func RegisterRoutes(r *gin.Engine, pool *pgxpool.Pool) {
         // --- Rotas de Usuário (Protegidas ou Administrativas) ---
         // Se você quiser listar todos os usuários ou ver um perfil específico
         
-        usersGroup := api.Group("/users")
+        api.GET("/users", usersH.UsersList)
+
+        protected := api.Group("/")
+        protected.Use(middleware.AuthMiddleware())
         {
-            // usersGroup.Use(middleware.Auth()) 
-            usersGroup.GET("/", usersH.UsersList)
-            usersGroup.GET("/:id", usersH.GetUserByID)
-        }
+            // Usuários protegidos
+            protected.GET("/users_auth", usersH.UsersList)
     }
+  }
 }
