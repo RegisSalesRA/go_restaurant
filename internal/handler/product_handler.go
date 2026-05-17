@@ -12,6 +12,7 @@ type CreateProductInput struct {
 	Name          string `json:"name" binding:"required"`
 	Price         int    `json:"price" binding:"required"`
 	StockQuantity int    `json:"stock_quantity" binding:"required"`
+	CategoryId int    `json:"category_id" binding:"required"`
 }
 
 type ProductsHandler struct {
@@ -26,7 +27,7 @@ func (h *ProductsHandler) SaveProduct(c *gin.Context) {
 		return
 	}
 
-	product, err := h.Repo.SaveProduct(c.Request.Context(), input.Name, input.Price, input.StockQuantity)
+	product, err := h.Repo.SaveProduct(c.Request.Context(), input.Name, input.Price, input.StockQuantity, input.CategoryId)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -73,7 +74,7 @@ func (h *ProductsHandler) UpdateProduct(c *gin.Context) {
 		return
 	}
 
-	err = h.Repo.UpdateProduct(c.Request.Context(), id, input.Name, input.Price, input.StockQuantity)
+	err = h.Repo.UpdateProduct(c.Request.Context(), id, input.Name, input.Price, input.StockQuantity, input.CategoryId)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return

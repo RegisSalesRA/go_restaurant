@@ -16,20 +16,21 @@ func NewProductRepository(p *pgxpool.Pool) *ProductRepository {
 	return &ProductRepository{pool: p}
 }
 
-func (r *ProductRepository) SaveProduct(ctx context.Context, name string, price int, stockQuantity int) (*models.Product, error) {
+func (r *ProductRepository) SaveProduct(ctx context.Context, name string, price int, stockQuantity int, categoryId int) (*models.Product, error) {
 
 	query := `
-        INSERT INTO products (name, price, stock_quantity)
-        VALUES ($1, $2, $3)
-        RETURNING id, name, price, stock_quantity
+        INSERT INTO products (name, price, stock_quantity, category_id)
+        VALUES ($1, $2, $3, $4)
+        RETURNING id, name, price, stock_quantity, category_id
     `
 	var product models.Product
 
-	err := r.pool.QueryRow(ctx, query, name, price, stockQuantity).Scan(
+	err := r.pool.QueryRow(ctx, query, name, price, stockQuantity, categoryId ).Scan(
 		&product.ID,
 		&product.Name,
 		&product.Price,
 		&product.StockQuantity,
+		&product.CategoryId,
 	)
 
 	if err != nil {
@@ -41,7 +42,7 @@ func (r *ProductRepository) SaveProduct(ctx context.Context, name string, price 
 
 func (r *ProductRepository) ProductList(ctx context.Context) ([]models.Product, error) {
 
-	query := `SELECT id, name, price, stock_quantity FROM products`
+	query := `SELECT id, name, price, stock_quantity, category_id FROM products`
 
 	rows, err := r.pool.Query(ctx, query)
 	if err != nil {
@@ -53,7 +54,7 @@ func (r *ProductRepository) ProductList(ctx context.Context) ([]models.Product, 
 
 	for rows.Next() {
 		var c models.Product
-		err := rows.Scan(&c.ID, &c.Name, &c.Price, &c.StockQuantity)
+		err := rows.Scan(&c.ID, &c.Name, &c.Price, &c.StockQuantity, &c.CategoryId)
 		if err != nil {
 			return nil, fmt.Errorf("erro ao escanear product: %w", err)
 		}
@@ -67,13 +68,13 @@ func (r *ProductRepository) ProductList(ctx context.Context) ([]models.Product, 
 	return Product, nil
 }
 
-func (r *ProductRepository) UpdateProduct(ctx context.Context, id int, newName string, newPrice int, newStockQuantity int) error {
+func (r *ProductRepository) UpdateProduct(ctx context.Context, id int, newName string, newPrice int, newStockQuantity int, newCategoryId int) error {
     query := `
         UPDATE products 
-        SET name = $1, price = $2, stock_quantity = $3 
-        WHERE id = $4
+        SET name = $1, price = $2, stock_quantity = $3, category_id = $4
+        WHERE id = $5
     `
-    result, err := r.pool.Exec(ctx, query, newName, newPrice, newStockQuantity, id)
+    result, err := r.pool.Exec(ctx, query, newName, newPrice, newStockQuantity, newCategoryId, id)
     if err != nil {
         return fmt.Errorf("falha ao atualizar products: %w", err)
     }
