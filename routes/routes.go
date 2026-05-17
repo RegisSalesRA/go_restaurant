@@ -14,6 +14,7 @@ func RegisterRoutes(r *gin.Engine, pool *pgxpool.Pool) {
     categoriesRepo := repository.NewCategoriesRepository(pool)
     productsRepo := repository.NewProductRepository(pool)
     usersRepo := repository.NewUsersRepository(pool)
+    tablesRepo := repository.NewTablesRepository(pool)
 
     // 2. Instancia os Handlers (Camada de Controle)
     // Ajustei de 'handlers' para 'handler' para bater com seu import
@@ -21,6 +22,7 @@ func RegisterRoutes(r *gin.Engine, pool *pgxpool.Pool) {
     categoriesHandle := &handler.CategoriesHandler{Repo: categoriesRepo}
     usersH := &handler.UsersHandler{Repo: usersRepo}
     productsHandle := &handler.ProductsHandler{Repo: productsRepo}
+    tablesHandle := &handler.TablesHandler{Repo: tablesRepo}
  
 
     // 3. Define as Rotas
@@ -48,6 +50,14 @@ func RegisterRoutes(r *gin.Engine, pool *pgxpool.Pool) {
         api.GET("/products/:id", productsHandle.GetProductByID)
         api.PUT("/products/:id", productsHandle.UpdateProduct)
         api.DELETE("/products/:id", productsHandle.DeleteProduct)
+
+        // Rotas de Tables
+        api.POST("/tables", tablesHandle.SaveTable)
+        api.GET("/tables", tablesHandle.TableList)
+        api.GET("/tables/search", tablesHandle.SearchTablesHandler)
+        api.GET("/tables/:id", tablesHandle.GetTableByID)
+        api.PUT("/tables/:id", tablesHandle.UpdateTable)
+        api.DELETE("/tables/:id", tablesHandle.DeleteTable)
 
         // --- Rotas de Usuário (Protegidas ou Administrativas) ---
         // Se você quiser listar todos os usuários ou ver um perfil específico
