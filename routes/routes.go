@@ -12,6 +12,7 @@ func RegisterRoutes(r *gin.Engine, pool *pgxpool.Pool) {
     // 1. Instancia os Repositories (Camada de Dados)
     cashRepo := repository.NewCashDrawerRepository(pool)
     categoriesRepo := repository.NewCategoriesRepository(pool)
+    productsRepo := repository.NewProductRepository(pool)
     usersRepo := repository.NewUsersRepository(pool)
 
     // 2. Instancia os Handlers (Camada de Controle)
@@ -19,6 +20,8 @@ func RegisterRoutes(r *gin.Engine, pool *pgxpool.Pool) {
     cashH := &handler.CashDrawerHandler{Repo: cashRepo}
     categoriesHandle := &handler.CategoriesHandler{Repo: categoriesRepo}
     usersH := &handler.UsersHandler{Repo: usersRepo}
+    productsHandle := &handler.ProductsHandler{Repo: productsRepo}
+ 
 
     // 3. Define as Rotas
     api := r.Group("/api/v1")
@@ -37,6 +40,14 @@ func RegisterRoutes(r *gin.Engine, pool *pgxpool.Pool) {
         api.GET("/categories/:id", categoriesHandle.GetCategoryByID)
         api.PUT("/categories/:id", categoriesHandle.UpdateCategory)
         api.DELETE("/categories/:id", categoriesHandle.DeleteCategory)
+
+        // Rotas de Products
+        api.POST("/products", productsHandle.SaveProduct)
+        api.GET("/products", productsHandle.ProductsList)
+        api.GET("/products/search", productsHandle.SearchProductsHandler)
+        api.GET("/products/:id", productsHandle.GetProductByID)
+        api.PUT("/products/:id", productsHandle.UpdateProduct)
+        api.DELETE("/products/:id", productsHandle.DeleteProduct)
 
         // --- Rotas de Usuário (Protegidas ou Administrativas) ---
         // Se você quiser listar todos os usuários ou ver um perfil específico
